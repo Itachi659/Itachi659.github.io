@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Amit Kumar Garai | Future ML Engineer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aspiring Future ML Engineer, Python Developer & Gamer." />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,600;0,800;1,600&family=Fira+Code:wght@400;500&family=Poppins:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #020617;
+            --card: rgba(15, 23, 42, 0.85);
+            --accent: #7c3aed;
+            /* Purple */
+            --accent-glow: rgba(124, 58, 237, 0.5);
+            --cyan: #22d3ee;
+            /* Cyan */
+            --text: #f9fafb;
+            --muted: #9ca3af;
+            --border: rgba(148, 163, 184, 0.15);
+            --terminal-bg: #0f0f12;
+            --gamer-pink: #ff0080;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- NEURAL NETWORK CANVAS --- */
+        #neuro-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1,
+        h2,
+        h3,
+        .nav-brand,
+        .btn,
+        .tagline,
+        .tab {
+            font-family: 'Exo 2', sans-serif;
+            font-style: italic;
+        }
+
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- NAV --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin-bottom: 40px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+
+        /* --- HERO (STACKED LAYOUT) --- */
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 50px;
+            scroll-margin-top: 100px;
+        }
+
+        .hero-info {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .tagline {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--cyan);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            width: fit-content;
+            margin-bottom: 15px;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        /* Updated H1 to be single line or auto-wrap */
+        h1 {
+            font-size: 3.2rem;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #fff, var(--muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .typing-area {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            margin-bottom: 25px;
+            height: 1.5em;
+            display: flex;
+            align-items: center;
+        }
+
+        .cursor {
+            width: 8px;
+            height: 18px;
+            background: var(--accent);
+            animation: blink 1s infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .meta-icons {
+            display: flex;
+            gap: 15px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .meta-icons span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Centered Button Group */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn:hover:not(.btn-primary) {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        /* --- TERMINAL (Creative CRT Look) --- */
+        .terminal-wrapper {
+            background: #0d0d10;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateZ(20px);
+            min-height: 320px;
+            position: relative;
+        }
+
+        /* CRT Scanline Effect */
+        .terminal-wrapper::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .red {
+            background: #ff5f56;
+        }
+
+        .yellow {
+            background: #ffbd2e;
+        }
+
+        .green {
+            background: #27c93f;
+        }
+
+        .terminal-title {
+            margin-left: 10px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .code-area {
+            padding: 25px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            flex-grow: 1;
+            color: #a5b3ce;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Code Syntax Colors */
+        .c-k {
+            color: #c678dd;
+        }
+
+        .c-f {
+            color: #61afef;
+        }
+
+        .c-s {
+            color: #98c379;
+        }
+
+        .c-c {
+            color: #e5c07b;
+        }
+
+        .c-t {
+            color: #e06c75;
+        }
+
+        .c-o {
+            color: #56b6c2;
+        }
+
+        .c-cmt {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .code-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--cyan);
+            vertical-align: text-bottom;
+            animation: blink 1s infinite;
+        }
+
+        /* --- MAIN CONTENT (STACKED LAYOUT) --- */
+        .main-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Card Tilt Class */
+        .tilt-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 10px;
+            scroll-margin-top: 100px;
+            transition: transform 0.1s;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2 i {
+            color: var(--cyan);
+        }
+
+        /* GAMER SECTION */
+        .gamer-section {
+            border: 1px solid rgba(255, 0, 128, 0.3);
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(255, 0, 128, 0.05));
+        }
+
+        .gamer-header {
+            color: var(--gamer-pink);
+            text-shadow: 0 0 10px rgba(255, 0, 128, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fa-infinity {
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .game-card:hover {
+            border-color: var(--gamer-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
+        }
+
+        .game-img {
+            width: 70px;
+            height: 50px;
+            object-fit: contain;
+            background: transparent;
+        }
+
+        .invert-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .game-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ccc;
+            margin-top: 5px;
+        }
+
+        /* ANIME SECTION */
+        .anime-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .anime-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .anime-item:hover {
+            background: rgba(124, 58, 237, 0.2);
+            transform: translateX(5px);
+        }
+
+        .anime-name {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .anime-tag {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: white;
+        }
+
+        /* PROJECTS & SKILLS */
+        .skill-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            padding: 6px 15px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--cyan);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        .project-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--border);
+            transition: 0.3s;
+        }
+
+        .project-card:hover {
+            border-left-color: var(--accent);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateX(5px);
+        }
+
+        /* QUALIFICATIONS - RAILWAY STYLE */
+        .qual-timeline {
+            border-left: 2px solid var(--border);
+            padding-left: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+        }
+
+        .qual-item {
+            position: relative;
+        }
+
+        /* The "Station" Dot */
+        .qual-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            /* Matches border position */
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: var(--bg);
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--cyan);
+            z-index: 2;
+        }
+
+        /* Highlight current station differently if needed, using simple dot for all for now */
+
+        /* FULL SHAYARI */
+        .shayari-full {
+            text-align: center;
+            padding: 60px;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), #020617), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            border: 1px solid var(--accent);
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+
+        .shayari-text {
+            font-family: 'Exo 2', sans-serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            min-height: 120px;
+        }
+
+        .shayari-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--cyan);
+            vertical-align: bottom;
+            animation: blink 1s infinite;
+        }
+
+        /* CONTACT CTA (Clean) */
+        .contact-cta {
+            text-align: center;
+            padding: 60px 20px;
+            margin-top: 20px;
+        }
+
+        .contact-cta h2 {
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NEURAL NETWORK CANVAS -->
+    <canvas id="neuro-canvas"></canvas>
+
+    <div class="wrapper">
+
+        <nav>
+            <div class="nav-brand">
+                <div class="nav-dot"></div> AMIT.ML
+            </div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#projects">Projects</a>
+                <a href="#qualifications">Qualifications</a>
+            </div>
+        </nav>
+
+        <!-- HERO -->
+        <header id="home">
+            <!-- Left: Bio (Added Tilt Effect) -->
+            <div class="hero-info tilt-card" data-tilt>
+                <div class="tagline">ASPIRING FUTURE ML ENGINEER</div>
+                <!-- Fixed H1: Single line -->
+                <h1 class="gradient-text">Amit Kumar Garai</h1>
+                <div class="typing-area">> <span id="typing"></span><span class="cursor"></span></div>
+
+                <div class="meta-icons">
+                    <span><i class="fas fa-code"></i> Python Expert</span>
+                    <span><i class="fas fa-rocket"></i> FAANG Goal</span>
+                </div>
+
+                <div class="btn-group">
+                    <a href="https://github.com/Itachi659" target="_blank" class="btn btn-primary"><i
+                            class="fab fa-github"></i> GitHub</a>
+                    <a href="https://www.linkedin.com/in/amit-garai-10a804267" target="_blank" class="btn"><i
+                            class="fab fa-linkedin"></i> LinkedIn</a>
+                    <a href="mailto:garaiamit64@gmail.com" class="btn"><i class="fas fa-envelope"></i> Email</a>
+                    <a href="tel:+918927312328" class="btn"><i class="fas fa-phone"></i> +91 8927312328</a>
+                </div>
+            </div>
+
+            <!-- Right: Code Terminal (Blended & Animated) -->
+            <div class="terminal-wrapper tilt-card" data-tilt>
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <span class="terminal-title">portfolio_source.py</span>
+                </div>
+                <div class="code-area" id="code-display"></div>
+            </div>
+        </header>
+
+        <!-- MAIN STACK -->
+        <div class="main-stack">
+
+            <section id="about" class="tilt-card" data-tilt>
+                <h2><i class="fas fa-user-astronaut"></i> About Me</h2>
+                <p style="color: var(--muted); font-size: 1rem; line-height: 1.7; text-align:center;">
+                    I'm a 1st year BCA student connecting the dots between <strong>Data Science</strong> and
+                    <strong>Automation</strong>.
+                    I build robust logic with Python and explore AI models to solve real-world problems.
+                </p>
+                <div class="skill-cloud" style="margin-top:20px;">
+                    <span class="skill-tag">Python 🐍</span>
+                    <span class="skill-tag">Scikit-Learn</span>
+                    <span class="skill-tag">Pandas</span>
+                    <span class="skill-tag">NumPy</span>
+                    <span class="skill-tag">Automation</span>
+                </div>
+            </section>
+
+            <section id="projects" class="tilt-card" data-tilt>
+                <h2><i class="fas fa-code-branch"></i> Projects</h2>
+                <div class="project-card">
+                    <h4 style="color:white; font-size: 1.1rem;">Iris Classification</h4>
+                    <small style="color:var(--cyan); font-family:'Fira Code'">Python • Scikit-Learn</small>
+                    <p style="color:var(--muted); font-size:0.9rem; margin-top:5px;">Classic ML model to predict flower
+                        species based on petal size.</p>
+                </div>
+                <div class="project-card">
+                    <h4 style="color:white; font-size: 1.1rem;">MNIST Digit Recognition</h4>
+                    <small style="color:var(--cyan); font-family:'Fira Code'">Python • SVM</small>
+                    <p style="color:var(--muted); font-size:0.9rem; margin-top:5px;">Computer Vision "Hello World" using
+                        Support Vector Machines.</p>
+                </div>
+                <div class="project-card">
+                    <h4 style="color:white; font-size: 1.1rem;">Spam Detection</h4>
+                    <small style="color:var(--cyan); font-family:'Fira Code'">Python • NLP</small>
+                    <p style="color:var(--muted); font-size:0.9rem; margin-top:5px;">Filtering junk messages using
+                        Natural Language Processing.</p>
+                </div>
+            </section>
+
+            <section id="qualifications" class="tilt-card" data-tilt>
+                <h2><i class="fas fa-route"></i> Qualifications</h2>
+                <!-- Updated with Railway Dots Class -->
+                <div class="qual-timeline">
+                    <div class="qual-item">
+                        <strong style="color:var(--cyan); font-size: 1.1rem;">Now</strong>
+                        <p style="font-size:0.9rem; color:var(--muted)">BCA 1st Year</p>
+                    </div>
+                    <div class="qual-item">
+                        <strong style="color:white; font-size: 1.1rem;">Class 12 (CBSE)</strong>
+                        <p style="font-size:0.9rem; color:var(--muted)">66%</p>
+                    </div>
+                    <div class="qual-item">
+                        <strong style="color:white; font-size: 1.1rem;">Class 10 (ICSE)</strong>
+                        <p style="font-size:0.9rem; color:var(--muted)">70%</p>
+                    </div>
+                    <div class="qual-item">
+                        <strong style="color:var(--accent); font-size: 1.1rem;">Long Term Goal</strong>
+                        <p style="font-size:0.9rem; color:var(--muted)">FAANG ML Engineer</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anime" class="tilt-card" data-tilt>
+                <h2><i class="fas fa-tv"></i> Anime</h2>
+                <div class="anime-list">
+                    <div class="anime-item" onclick="searchAnime('Steins;Gate')">
+                        <span class="anime-name">Steins;Gate</span>
+                        <span class="anime-tag">Sci-Fi</span>
+                    </div>
+                    <div class="anime-item" onclick="searchAnime('Mushoku Tensei')">
+                        <span class="anime-name">Mushoku Tensei</span>
+                        <span class="anime-tag">Isekai</span>
+                    </div>
+                    <div class="anime-item" onclick="searchAnime('Re:Zero')">
+                        <span class="anime-name">Re:Zero</span>
+                        <span class="anime-tag">Thriller</span>
+                    </div>
+                    <div class="anime-item" onclick="searchAnime('Your Name')">
+                        <span class="anime-name">Your Name</span>
+                        <span class="anime-tag">Movie</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GAMER SECTION -->
+            <section id="gamer" class="gamer-section tilt-card" data-tilt>
+                <h2 class="gamer-header">
+                    <i class="fas fa-gamepad"></i> Gamer Mode - Stuck in Loop
+                    <i class="fas fa-infinity" style="font-size: 1.2rem; margin-left:5px;"></i>
+                </h2>
+                <div class="game-grid">
+                    <!-- GTA V -->
+                    <div class="game-card">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png" alt="GTA V"
+                            class="game-img">
+                        <div class="game-title">GTA V</div>
+                    </div>
+
+                    <!-- Genshin Impact -->
+                    <div class="game-card">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/5d/Genshin_Impact_logo.svg/2560px-Genshin_Impact_logo.svg.png"
+                            alt="Genshin" class="game-img invert-logo">
+                        <div class="game-title">Genshin</div>
+                    </div>
+
+                    <!-- Valorant -->
+                    <div class="game-card">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Valorant_logo_-_pink_color_version.svg/1200px-Valorant_logo_-_pink_color_version.svg.png"
+                            alt="Valorant" class="game-img">
+                        <div class="game-title">Valorant</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FULL SHAYARI SECTION -->
+            <section id="shayari" class="shayari-full tilt-card" data-tilt>
+                <div class="shayari-text" id="shayari-container"></div>
+                <div style="color: var(--cyan); font-size: 0.9rem; margin-top: 10px;">— Amit, mixing code & feelings
+                </div>
+            </section>
+
+            <!-- CONTACT CTA -->
+            <div class="contact-cta">
+                <h2>Interested in working together?</h2>
+                <p style="color: var(--muted); margin-bottom: 25px; font-size: 1.1rem;">I am open to internships and
+                    collaborative projects.</p>
+                <a href="#home" class="btn btn-primary"
+                    style="display: inline-flex; font-size: 1.1rem; padding: 12px 30px;">
+                    Contact Me <i class="fas fa-arrow-up" style="margin-left:8px"></i>
+                </a>
+            </div>
+
+        </div> <!-- End Main Stack -->
+
+        <footer style="text-align:center; padding: 50px 20px; color: var(--muted); font-size: 0.9rem;">
+            Built with <span style="color:var(--cyan)">Logic</span> & <span style="color:var(--accent)">Curiosity</span>
+            by Amit.
+        </footer>
+
+    </div>
+
+    <script>
+        // --- NEURAL NETWORK CANVAS ANIMATION ---
+        const canvas = document.getElementById('neuro-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let points = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Point {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+        }
+
+        for (let i = 0; i < 50; i++) points.push(new Point());
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw connections
+            ctx.strokeStyle = 'rgba(124, 58, 237, 0.15)'; // Purple low opacity
+            for (let i = 0; i < points.length; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                    const dx = points[i].x - points[j].x;
+                    const dy = points[i].y - points[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(points[i].x, points[i].y);
+                        ctx.lineTo(points[j].x, points[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw points
+            ctx.fillStyle = '#22d3ee'; // Cyan
+            for (let point of points) {
+                point.update();
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+
+        // --- HERO TYPING EFFECT ---
+        const phrases = ["Learning ML...", "Playing Genshin...", "Writing Python...", "Training Models..."];
+        let i = 0, charI = 0, isDeleting = false;
+        const typeEl = document.getElementById('typing');
+
+        function typeLoop() {
+            let current = phrases[i % phrases.length];
+            typeEl.innerText = current.substring(0, charI);
+            if (isDeleting) charI--; else charI++;
+
+            if (!isDeleting && charI === current.length + 1) { isDeleting = true; setTimeout(typeLoop, 1000); }
+            else if (isDeleting && charI === 0) { isDeleting = false; i++; setTimeout(typeLoop, 200); }
+            else setTimeout(typeLoop, isDeleting ? 30 : 60);
+        }
+        typeLoop();
+
+        // --- ANIME SEARCH FUNCTION ---
+        function searchAnime(name) {
+            window.open('https://www.google.com/search?q=' + encodeURIComponent(name) + ' anime', '_blank');
+        }
+
+        // --- SHAYARI TYPEWRITER LOGIC ---
+        const shayariText = `Tere bina, dhalta hua suraj bhi thoda khaali sa lagta hai,
+Tere saath, kal ka ugta hua suraj dekhna ek sapna jaisa lagta hai.
+
+Code ke beech bhi, kuch alfaaz tere naam ke likhta hoon,
+Bug fix karte karte bhi, kabhi kabhi bas tujhe hi sochta hoon.
+
+Par ab seekh raha hoon,
+ki pyaar bhi tabhi khoobsurat hai,
+jab usme khud se mohabbat kam na ho.`;
+
+        const shayariContainer = document.getElementById('shayari-container');
+        let hasTypedShayari = false;
+
+        const shayariObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasTypedShayari) {
+                    hasTypedShayari = true;
+                    typeShayari();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        shayariObserver.observe(document.getElementById('shayari'));
+
+        function typeShayari() {
+            let sIndex = 0;
+            const speed = 2500 / shayariText.length;
+
+            function typeChar() {
+                if (sIndex < shayariText.length) {
+                    shayariContainer.textContent += shayariText.charAt(sIndex);
+                    sIndex++;
+                    setTimeout(typeChar, speed);
+                } else {
+                    shayariContainer.innerHTML += '<span class="shayari-cursor"></span>';
+                }
+            }
+            typeChar();
+        }
+
+        // --- 3D TILT EFFECT LOGIC ---
+        const cards = document.querySelectorAll('.tilt-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -2; // Max rotation deg
+                const rotateY = ((x - centerX) / centerX) * 2;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+            });
+        });
+
+        // --- ANIMATED CODE TERMINAL LOGIC ---
+        // Define the code tokens to be typed
+        const codeTokens = [
+            { text: "# main.py\n", class: "c-cmt" },
+            { text: "class ", class: "c-k" },
+            { text: "Amit", class: "c-c" },
+            { text: ":\n  ", class: "c-o" },
+            { text: "def ", class: "c-k" },
+            { text: "__init__", class: "c-f" },
+            { text: "(self):\n    self.role = ", class: "c-o" },
+            { text: "\"Future ML Engineer\"\n", class: "c-s" },
+            { text: "    self.stack = [", class: "c-o" },
+            { text: "\"Python\"", class: "c-s" },
+            { text: ", ", class: "c-o" },
+            { text: "\"React\"", class: "c-s" },
+            { text: "]\n\n", class: "c-o" },
+
+            { text: "// App.jsx\n", class: "c-cmt" },
+            { text: "return ", class: "c-k" },
+            { text: "(\n  ", class: "c-o" },
+            { text: "<Hero ", class: "c-t" },
+            { text: "name=", class: "c-o" },
+            { text: "\"Amit\" ", class: "c-s" },
+            { text: "role=", class: "c-o" },
+            { text: "{self.role} ", class: "c-f" },
+            { text: "/>\n)", class: "c-t" }
+        ];
+
+        const codeDisplay = document.getElementById('code-display');
+        let tokenIndex = 0;
+        let charIndex = 0;
+        let currentSpan = null;
+
+        function typeCode() {
+            if (tokenIndex < codeTokens.length) {
+                const token = codeTokens[tokenIndex];
+
+                if (!currentSpan) {
+                    currentSpan = document.createElement('span');
+                    currentSpan.className = token.class;
+                    codeDisplay.appendChild(currentSpan);
+                }
+
+                if (charIndex < token.text.length) {
+                    currentSpan.textContent += token.text[charIndex];
+                    charIndex++;
+                    // Scroll to bottom
+                    codeDisplay.scrollTop = codeDisplay.scrollHeight;
+                    setTimeout(typeCode, 5); // FASTER Typing speed (was 30)
+                } else {
+                    charIndex = 0;
+                    tokenIndex++;
+                    currentSpan = null;
+                    setTimeout(typeCode, 5);
+                }
+            } else {
+                // Add blinking cursor at the end
+                const cursor = document.createElement('span');
+                cursor.className = 'code-cursor';
+                codeDisplay.appendChild(cursor);
+            }
+        }
+
+        // Start typing when page loads
+        window.addEventListener('load', () => {
+            setTimeout(typeCode, 200);
+        });
+
+    </script>
+</body>
+
+</html>
