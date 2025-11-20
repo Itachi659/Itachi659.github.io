@@ -643,6 +643,147 @@
                 display: none;
             }
         }
+
+        /* --- AI CHAT WIDGET STYLES --- */
+        .ai-chat-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .chat-toggle-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--accent-glow);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-toggle-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            display: none;
+            /* Hidden by default */
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            transform-origin: bottom right;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .chat-header {
+            background: var(--accent);
+            padding: 15px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .message.bot {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border-bottom-left-radius: 2px;
+            align-self: flex-start;
+        }
+
+        .message.user {
+            background: var(--cyan);
+            color: #000;
+            border-bottom-right-radius: 2px;
+            align-self: flex-end;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 20px;
+            color: white;
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: var(--accent);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Mobile Fix */
+        @media (max-width: 480px) {
+            .chat-window {
+                width: 300px;
+                right: -20px;
+            }
+        }
     </style>
 </head>
 
@@ -833,6 +974,33 @@
                     Contact Me <i class="fas fa-arrow-up" style="margin-left:8px"></i>
                 </a>
             </div>
+            <!-- AI CHAT WIDGET -->
+            <div class="ai-chat-container">
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-header">
+                        <span><i class="fas fa-robot"></i> Digital Amit (AI)</span>
+                        <button onclick="toggleChat()"
+                            style="background:none; border:none; color:white; cursor:pointer;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot">
+                            Hello! I am Amit's AI Digital Twin. Ask me about his skills, projects, or his favorite
+                            Anime! 🤖
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="user-input" placeholder="Ask me anything..."
+                            onkeypress="handleEnter(event)">
+                        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <button class="chat-toggle-btn" onclick="toggleChat()">
+                    <i class="fas fa-comment-dots"></i>
+                </button>
+            </div>
 
         </div> <!-- End Main Stack -->
 
@@ -844,91 +1012,91 @@
     </div>
 
     <script>
-        // --- NEURAL NETWORK CANVAS ANIMATION ---
-        const canvas = document.getElementById('neuro-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let points = [];
+    // --- NEURAL NETWORK CANVAS ANIMATION ---
+    const canvas = document.getElementById('neuro-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let points = [];
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Point {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+    }
+
+    for (let i = 0; i < 50; i++) points.push(new Point());
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(124, 58, 237, 0.15)'; // Purple low opacity
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const dx = points[i].x - points[j].x;
+          const dy = points[i].y - points[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[j].x, points[j].y);
+            ctx.stroke();
+          }
         }
-        window.addEventListener('resize', resize);
-        resize();
+      }
 
-        class Point {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-        }
-
-        for (let i = 0; i < 50; i++) points.push(new Point());
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-
-            // Draw connections
-            ctx.strokeStyle = 'rgba(124, 58, 237, 0.15)'; // Purple low opacity
-            for (let i = 0; i < points.length; i++) {
-                for (let j = i + 1; j < points.length; j++) {
-                    const dx = points[i].x - points[j].x;
-                    const dy = points[i].y - points[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(points[i].x, points[i].y);
-                        ctx.lineTo(points[j].x, points[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // Draw points
-            ctx.fillStyle = '#22d3ee'; // Cyan
-            for (let point of points) {
-                point.update();
-                ctx.beginPath();
-                ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
+      // Draw points
+      ctx.fillStyle = '#22d3ee'; // Cyan
+      for (let point of points) {
+        point.update();
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
 
 
-        // --- HERO TYPING EFFECT ---
-        const phrases = ["Learning ML...", "Playing Genshin...", "Writing Python...", "Training Models..."];
-        let i = 0, charI = 0, isDeleting = false;
-        const typeEl = document.getElementById('typing');
+    // --- HERO TYPING EFFECT ---
+    const phrases = ["Learning ML...", "Playing Genshin...", "Writing Python...", "Training Models..."];
+    let i = 0, charI = 0, isDeleting = false;
+    const typeEl = document.getElementById('typing');
 
-        function typeLoop() {
-            let current = phrases[i % phrases.length];
-            typeEl.innerText = current.substring(0, charI);
-            if (isDeleting) charI--; else charI++;
+    function typeLoop() {
+      let current = phrases[i % phrases.length];
+      typeEl.innerText = current.substring(0, charI);
+      if(isDeleting) charI--; else charI++;
 
-            if (!isDeleting && charI === current.length + 1) { isDeleting = true; setTimeout(typeLoop, 1000); }
-            else if (isDeleting && charI === 0) { isDeleting = false; i++; setTimeout(typeLoop, 200); }
-            else setTimeout(typeLoop, isDeleting ? 30 : 60);
-        }
-        typeLoop();
+      if(!isDeleting && charI === current.length + 1) { isDeleting = true; setTimeout(typeLoop, 1000); }
+      else if(isDeleting && charI === 0) { isDeleting = false; i++; setTimeout(typeLoop, 200); }
+      else setTimeout(typeLoop, isDeleting ? 30 : 60);
+    }
+    typeLoop();
 
-        // --- ANIME SEARCH FUNCTION ---
-        function searchAnime(name) {
-            window.open('https://www.google.com/search?q=' + encodeURIComponent(name) + ' anime', '_blank');
-        }
+    // --- ANIME SEARCH FUNCTION ---
+    function searchAnime(name) {
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(name) + ' anime', '_blank');
+    }
 
-        // --- SHAYARI TYPEWRITER LOGIC ---
-        const shayariText = `Tere bina, dhalta hua suraj bhi thoda khaali sa lagta hai,
+    // --- SHAYARI TYPEWRITER LOGIC ---
+    const shayariText = `Tere bina, dhalta hua suraj bhi thoda khaali sa lagta hai,
 Tere saath, kal ka ugta hua suraj dekhna ek sapna jaisa lagta hai.
 
 Code ke beech bhi, kuch alfaaz tere naam ke likhta hoon,
@@ -938,127 +1106,208 @@ Par ab seekh raha hoon,
 ki pyaar bhi tabhi khoobsurat hai,
 jab usme khud se mohabbat kam na ho.`;
 
-        const shayariContainer = document.getElementById('shayari-container');
-        let hasTypedShayari = false;
+    const shayariContainer = document.getElementById('shayari-container');
+    let hasTypedShayari = false;
 
-        const shayariObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !hasTypedShayari) {
-                    hasTypedShayari = true;
-                    typeShayari();
-                }
-            });
-        }, { threshold: 0.5 });
+    const shayariObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !hasTypedShayari) {
+          hasTypedShayari = true;
+          typeShayari();
+        }
+      });
+    }, { threshold: 0.5 });
 
-        shayariObserver.observe(document.getElementById('shayari'));
+    shayariObserver.observe(document.getElementById('shayari'));
 
-        function typeShayari() {
-            let sIndex = 0;
-            const speed = 2500 / shayariText.length;
+    function typeShayari() {
+      let sIndex = 0;
+      const speed = 2500 / shayariText.length; 
+      
+      function typeChar() {
+        if (sIndex < shayariText.length) {
+          shayariContainer.textContent += shayariText.charAt(sIndex);
+          sIndex++;
+          setTimeout(typeChar, speed);
+        } else {
+          shayariContainer.innerHTML += '<span class="shayari-cursor"></span>';
+        }
+      }
+      typeChar();
+    }
 
-            function typeChar() {
-                if (sIndex < shayariText.length) {
-                    shayariContainer.textContent += shayariText.charAt(sIndex);
-                    sIndex++;
-                    setTimeout(typeChar, speed);
-                } else {
-                    shayariContainer.innerHTML += '<span class="shayari-cursor"></span>';
-                }
-            }
-            typeChar();
+    // --- 3D TILT EFFECT LOGIC ---
+    const cards = document.querySelectorAll('.tilt-card');
+    
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = ((y - centerY) / centerY) * -2; // Max rotation deg
+        const rotateY = ((x - centerX) / centerX) * 2;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+      });
+    });
+
+    // --- ANIMATED CODE TERMINAL LOGIC ---
+    // Define the code tokens to be typed
+    const codeTokens = [
+      { text: "# main.py\n", class: "c-cmt" },
+      { text: "class ", class: "c-k" },
+      { text: "Amit", class: "c-c" },
+      { text: ":\n  ", class: "c-o" },
+      { text: "def ", class: "c-k" },
+      { text: "__init__", class: "c-f" },
+      { text: "(self):\n    self.role = ", class: "c-o" },
+      { text: "\"Future ML Engineer\"\n", class: "c-s" },
+      { text: "    self.stack = [", class: "c-o" },
+      { text: "\"Python\"", class: "c-s" },
+      { text: ", ", class: "c-o" },
+      { text: "\"React\"", class: "c-s" },
+      { text: "]\n\n", class: "c-o" },
+      
+      { text: "// App.jsx\n", class: "c-cmt" },
+      { text: "return ", class: "c-k" },
+      { text: "(\n  ", class: "c-o" },
+      { text: "<Hero ", class: "c-t" },
+      { text: "name=", class: "c-o" },
+      { text: "\"Amit\" ", class: "c-s" },
+      { text: "role=", class: "c-o" },
+      { text: "{self.role} ", class: "c-f" },
+      { text: "/>\n)", class: "c-t" }
+    ];
+
+    const codeDisplay = document.getElementById('code-display');
+    let tokenIndex = 0;
+    let charIndex = 0;
+    let currentSpan = null;
+
+    function typeCode() {
+      if (tokenIndex < codeTokens.length) {
+        const token = codeTokens[tokenIndex];
+        
+        if (!currentSpan) {
+          currentSpan = document.createElement('span');
+          currentSpan.className = token.class;
+          codeDisplay.appendChild(currentSpan);
         }
 
-        // --- 3D TILT EFFECT LOGIC ---
-        const cards = document.querySelectorAll('.tilt-card');
+        if (charIndex < token.text.length) {
+          currentSpan.textContent += token.text[charIndex];
+          charIndex++;
+          // Scroll to bottom
+          codeDisplay.scrollTop = codeDisplay.scrollHeight;
+          setTimeout(typeCode, 5); // FASTER Typing speed (was 30)
+        } else {
+          charIndex = 0;
+          tokenIndex++;
+          currentSpan = null;
+          setTimeout(typeCode, 5);
+        }
+      } else {
+        // Add blinking cursor at the end
+        const cursor = document.createElement('span');
+        cursor.className = 'code-cursor';
+        codeDisplay.appendChild(cursor);
+      }
+    }
+    
+    // Start typing when page loads
+    window.addEventListener('load', () => {
+      setTimeout(typeCode, 200);
+    });
 
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+    // --- AI CHATBOT LOGIC (FIXED MODEL) ---
+    const chatWindow = document.getElementById('chat-window');
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
 
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
+    function toggleChat() {
+      if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+        chatWindow.style.display = 'flex';
+      } else {
+        chatWindow.style.display = 'none';
+      }
+    }
 
-                const rotateX = ((y - centerY) / centerY) * -2; // Max rotation deg
-                const rotateY = ((x - centerX) / centerX) * 2;
+    function handleEnter(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
 
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
+    async function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
 
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-            });
+      addMessage(text, 'user');
+      userInput.value = '';
+      const loadingId = addMessage('Thinking...', 'bot', true);
+
+      try {
+        // --- PASTE YOUR API KEY HERE ---
+        const API_KEY = "AIzaSyBnXg6eL4HAyEWVfHlmQFsJsLAeIVy1Vcg"; 
+        // ------------------------------
+
+        if (API_KEY === "YOUR_API_KEY_HERE") {
+            throw new Error("Please replace 'YOUR_API_KEY_HERE' in the code with your actual Gemini API Key.");
+        }
+        
+        // UPDATED MODEL NAME: gemini-2.5-flash-preview-09-2025
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `You are the AI digital twin of Amit Kumar Garai. 
+                Context about Amit:
+                - Aspiring Future ML Engineer & 1st Year BCA Student.
+                - Skills: Python, Scikit-Learn, Pandas, React.js, Automation.
+                - Goal: FAANG Engineer.
+                - Personality: Loves Anime (Steins;Gate, Re:Zero), writes Shayari, loves Gaming (Genshin, GTA V).
+                
+                User Question: ${text}`
+              }]
+            }]
+          })
         });
 
-        // --- ANIMATED CODE TERMINAL LOGIC ---
-        // Define the code tokens to be typed
-        const codeTokens = [
-            { text: "# main.py\n", class: "c-cmt" },
-            { text: "class ", class: "c-k" },
-            { text: "Amit", class: "c-c" },
-            { text: ":\n  ", class: "c-o" },
-            { text: "def ", class: "c-k" },
-            { text: "__init__", class: "c-f" },
-            { text: "(self):\n    self.role = ", class: "c-o" },
-            { text: "\"Future ML Engineer\"\n", class: "c-s" },
-            { text: "    self.stack = [", class: "c-o" },
-            { text: "\"Python\"", class: "c-s" },
-            { text: ", ", class: "c-o" },
-            { text: "\"React\"", class: "c-s" },
-            { text: "]\n\n", class: "c-o" },
-
-            { text: "// App.jsx\n", class: "c-cmt" },
-            { text: "return ", class: "c-k" },
-            { text: "(\n  ", class: "c-o" },
-            { text: "<Hero ", class: "c-t" },
-            { text: "name=", class: "c-o" },
-            { text: "\"Amit\" ", class: "c-s" },
-            { text: "role=", class: "c-o" },
-            { text: "{self.role} ", class: "c-f" },
-            { text: "/>\n)", class: "c-t" }
-        ];
-
-        const codeDisplay = document.getElementById('code-display');
-        let tokenIndex = 0;
-        let charIndex = 0;
-        let currentSpan = null;
-
-        function typeCode() {
-            if (tokenIndex < codeTokens.length) {
-                const token = codeTokens[tokenIndex];
-
-                if (!currentSpan) {
-                    currentSpan = document.createElement('span');
-                    currentSpan.className = token.class;
-                    codeDisplay.appendChild(currentSpan);
-                }
-
-                if (charIndex < token.text.length) {
-                    currentSpan.textContent += token.text[charIndex];
-                    charIndex++;
-                    // Scroll to bottom
-                    codeDisplay.scrollTop = codeDisplay.scrollHeight;
-                    setTimeout(typeCode, 5); // FASTER Typing speed (was 30)
-                } else {
-                    charIndex = 0;
-                    tokenIndex++;
-                    currentSpan = null;
-                    setTimeout(typeCode, 5);
-                }
-            } else {
-                // Add blinking cursor at the end
-                const cursor = document.createElement('span');
-                cursor.className = 'code-cursor';
-                codeDisplay.appendChild(cursor);
-            }
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error.message || response.statusText);
         }
 
-        // Start typing when page loads
-        window.addEventListener('load', () => {
-            setTimeout(typeCode, 200);
-        });
+        const data = await response.json();
+        const botReply = data.candidates[0].content.parts[0].text;
 
+        document.getElementById(loadingId).remove();
+        addMessage(botReply, 'bot');
+
+      } catch (error) {
+        document.getElementById(loadingId).remove();
+        addMessage("⚠️ Error: " + error.message, 'bot'); 
+        console.error("Gemini API Error:", error);
+      }
+    }
+
+    function addMessage(text, sender, isLoading = false) {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      div.innerText = text;
+      if (isLoading) div.id = 'loading-msg';
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div.id;
+    }
     </script>
 </body>
 
